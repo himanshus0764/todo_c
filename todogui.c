@@ -1,11 +1,11 @@
-
 #include "raylib.h"
 #include <string.h>
 #include <stdio.h>
 #include <stdbool.h>
+#include <stdlib.h>  // For atoi()
 
 #define MAX_INPUT_LENGTH 256
-#define MAX_TASKS 10
+#define MAX_TASKS 100  // Maximum possible tasks
 
 typedef enum { INPUT_KEY, INPUT_TASK, SHOW_TASKS } AppState;
 
@@ -22,7 +22,7 @@ int main(void) {
 
     char keyInput[MAX_INPUT_LENGTH] = {0};
     char tasks[MAX_TASKS][MAX_INPUT_LENGTH] = {0};
-    int tasksCount = 0;
+    int tasksCount = 0;  // Will be set dynamically
 
     bool finished[MAX_TASKS] = { false };
 
@@ -35,34 +35,50 @@ int main(void) {
             }
             key = GetCharPressed();
         }
+
         if (IsKeyPressed(KEY_BACKSPACE) && textLength > 0) {
             inputText[--textLength] = '\0';
         }
+
         if (IsKeyPressed(KEY_ENTER)) {
             if (state == INPUT_KEY) {
                 if (textLength > 0) {
                     strcpy(keyInput, inputText);
+                    int keyValue = atoi(keyInput);  // Convert input to an integer
+
+                    // Validate and set tasksCount
+                    if (keyValue > 0 && keyValue <= MAX_TASKS) {
+                        tasksCount = keyValue;
+                    } else {
+                        tasksCount = MAX_TASKS;  // Default if invalid input
+                    }
+
                     memset(inputText, 0, MAX_INPUT_LENGTH);
                     textLength = 0;
                     state = INPUT_TASK;
                 }
             } else if (state == INPUT_TASK) {
                 if (textLength > 0) {
-                    if (tasksCount < MAX_TASKS) {
-                        strcpy(tasks[tasksCount], inputText);
-                        tasksCount++;
-                    }           memset(inputText, 0, MAX_INPUT_LENGTH);
+                    static int currentTask = 0;
+
+                    if (currentTask < tasksCount) {  // Limit task addition
+                        strcpy(tasks[currentTask], inputText);
+                        currentTask++;
+                    }
+
+                    memset(inputText, 0, MAX_INPUT_LENGTH);
                     textLength = 0;
                 } else {
                     state = SHOW_TASKS;
                 }
             }
         }
+
         BeginDrawing();
             ClearBackground(RAYWHITE);
 
             if (state == INPUT_KEY) {
-                DrawText("Enter key:", 20, 20, 20, BLACK);
+                DrawText("Enter number of tasks:", 20, 20, 20, BLACK);
                 DrawRectangle(20, 50, 500, 40, LIGHTGRAY);
                 DrawRectangleLines(20, 50, 500, 40, BLACK);
                 DrawText(inputText, 30, 60, 20, BLACK);
@@ -71,7 +87,8 @@ int main(void) {
                 DrawRectangle(20, 50, 500, 40, LIGHTGRAY);
                 DrawRectangleLines(20, 50, 500, 40, BLACK);
                 DrawText(inputText, 30, 60, 20, BLACK);
-                for (int i = 0; i <= tasksCount; i++) {
+
+                for (int i = 0; i < tasksCount; i++) {  // Fixed loop condition
                     char taskDisplay[300];
                     sprintf(taskDisplay, "%d: %s", i + 1, tasks[i]);
                     DrawText(taskDisplay, 20, 110 + i * 30, 20, DARKGRAY);
@@ -80,6 +97,7 @@ int main(void) {
                 DrawText("Key Entered:", 20, 20, 20, BLACK);
                 DrawText(keyInput, 150, 20, 20, DARKGRAY);
                 DrawText("All Tasks:", 20, 60, 20, BLACK);
+
                 for (int i = 0; i < tasksCount; i++) {
                     char taskDisplay[300];
                     sprintf(taskDisplay, "%d: %s", i + 1, tasks[i]);
