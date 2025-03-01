@@ -63,5 +63,9 @@ gcc -o todo_cli todo_cli.c
 3. ✏️ Provide task descriptions as prompted.
 4. 📄 The tasks will be displayed in the console and in a Raylib GUI.
 
+## 📽️ Demo Video
+[![Demo Video](https://github.com/user-attachments/assets/e1c1e76a-988d-40a3-aee2-a43b0350a01c)](https://vimeo.com/1061548196)
+
+
 ## 📜 License
 This project is licensed under the MIT License.
