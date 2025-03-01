@@ -27,7 +27,7 @@ This project consists of two implementations of a simple Todo application:
 ## 📥 Installation
 1. 📂 Clone the repository:
    ```sh
-   git clone <repository_url>
+   git clone https://github.com/himanshus0764/todo_c.git
    cd todo-app
    ```
 2. 🛠️ Install Raylib (for GUI version):
